@@ -1,0 +1,99 @@
+﻿@{
+    ViewData["Title"] = "City Add/Edit";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@model AddressBookDemo.Areas.LOC_City.Models.LOC_CityModel
+<div class="row">
+    <div class="col-md-12" style="font-family:'Bahnschrift';font-size:large">
+        <h3>@TempData["SuccessMSG"]</h3>
+        <form method="post" asp-controller="LOC_City" asp-action="Save">
+            @Html.HiddenFor(x => x.CityID)
+            <div class="form-group">
+                <label>Country Name :</label>
+                @*<input type="text" class="form-control" asp-for="CountryID" placeholder="Enter Country ID" />*@
+                <select class="form-control" asp-for="CountryID" asp-items="@(new SelectList(ViewBag.CountryList,"CountryID","CountryName"))" onchange="fnOnStateChange();">
+                    <option value="">Select Country</option>
+                </select>
+                <span asp-validation-for="CountryID" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label>State Name :</label>
+                @*<input type="text" class="form-control" asp-for="StateID" placeholder="Enter State ID" />*@
+                <select class="form-control" asp-for="StateID" asp-items="@(new SelectList(ViewBag.StateList,"StateID","StateName"))">
+                    <option value="">Select State</option>
+                </select>
+                <span asp-validation-for="StateID" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label>City Name :</label>
+                <input type="text" class="form-control" asp-for="CityName" placeholder="Enter City Name" />
+                <span asp-validation-for="CityName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label>City Code :</label>
+                <input type="text" class="form-control" asp-for="CityCode" placeholder="Enter City Code" />
+                <span asp-validation-for="CityCode" class="text-danger"></span>
+            </div>
+            
+            <div class="form-group">
+                <label>Creation Date :</label>
+                <input type="date" class="form-control" asp-for="CreationDate" />
+            </div>
+            <div class="form-group">
+                <label>Modification Date :</label>
+                <input type="date" class="form-control" asp-for="ModificationDate" />
+            </div>
+            <br />
+
+            <input type="submit" class="btn btn-dark" value="Save" />
+            <a asp-action="Index" class="btn btn-outline-success">Cancel</a>
+           
+        </form>
+    </div>
+</div>
+
+
+
+@section Scripts{
+    <script>
+        function fnOnStateChange() {
+
+            var CountryID = $("#CountryID").val();
+
+            if (CountryID !== "") {
+                $("#StateID").empty();
+                $("#StateID").append($("<option></option>").val("").html("Select State"));
+                $.ajax(
+                    {
+                        type: "POST",
+                        contentType: "application/json; charset=utf-8",
+                        url: "@Url.Action("DropDownByCountry","LOC_City")" + "?&CountryID=" + CountryID,
+                        data: {},
+                        datatType: "json",
+                        success: function (Result) {
+                            $.each(Result,
+                                function (key, value) {
+                                    $("#StateID").append($("<option></option>").val(value.stateID).html(value.stateName));
+                                }
+                            );
+                        },
+                        error: function (r) {
+                            alert("Error While Loading Dropdown!");
+                        }
+                    }
+                );
+            }
+            else {
+                $("StateID").empty();
+                $("StateID").append($("<option></option>").val("").html("Select State"));
+            }
+        }
+    </script>
+   
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+ 
+}
+
+    

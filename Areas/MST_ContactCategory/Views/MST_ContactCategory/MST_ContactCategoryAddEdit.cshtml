@@ -1,0 +1,38 @@
+﻿@{
+    ViewData["Title"] = "Contact Category Add/Edit";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@model AddressBookDemo.Areas.MST_ContactCategory.Models.MST_ContactCategoryModel
+<div class="row">
+    <div class="col-md-12" style="font-family:'Bahnschrift';font-size:large">
+        <h3>@TempData["SuccessMSG"]</h3>
+        <form method="post" asp-controller="MST_ContactCategory" asp-action="Save">
+            @Html.HiddenFor(x => x.ContactCategoryID)
+            <div class="form-group">
+                <label>Contact Category Name :</label>
+                <input type="text" class="form-control" asp-for="ContactCategoryName" placeholder="Enter Category Name" />
+                <span asp-validation-for="ContactCategoryName" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label>Creation Date :</label>
+                <input type="date" class="form-control" asp-for="CreationDate" />
+            </div>
+            <div class="form-group">
+                <label>Modification Date :</label>
+                <input type="date" class="form-control" asp-for="ModificationDate" />
+            </div>
+            <br />
+
+            <input type="submit" class="btn btn-dark" value="Save" />
+            <a asp-action="Index" class="btn btn-outline-success">Cancel</a>
+        </form>
+    </div>
+</div>
+@section scripts{
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    }
+
+
